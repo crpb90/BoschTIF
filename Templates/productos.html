@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>Listar Productos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+     <script src="https://kit.fontawesome.com/0f1907ba90.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <!-- Animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header id="header">
+        <!-- Coloca la barra de navegación aquí -->
+    </header>
+    <main>
+        <div id="app" class="container">
+            <h1 v-html="tituloTabla"></h1>
+            <br>
+            <!-- <a class="btn btn-primary" href="producto-create.html">Nuevo</a> -->
+            <!-- <a class="btn btn-primary btn-animate" href="producto-create.html">Nuevo</a> -->
+            <a class="btn btn-primary animate__animated animate__heartBeat btn-animate" href="producto-create.html">Publicar Item</a>
+            <a  id="elBoton" class="btn btn-primary animate__animated animate__heartBeat btn-animate" href="#" @click="mostrarCotizacion">{{textoBoton}}</a>
+            <br><br>
+            <div v-if="error">
+                <p>Lo sentimos, ha ocurrido un error.</p>
+            </div>
+            <div v-else>
+                <section v-if="cargando">
+                    <div class="spinner-border"></div>
+                    <p>Cargando...</p>
+                </section>
+                <section v-else>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="laTabla">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col" v-html="titulo"></th>
+                                    <th scope="col">Imagen</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="tablaActual==1">
+                                <!-- Iterar sobre cada producto -->
+                                <tr class="" v-for="producto in productos" :key="producto.id">
+                                    <td scope="row">{{producto.id}}</td>
+                                    <td>{{producto.nombre}}</td>
+                                    <td style="text-align:center;">{{producto.precio}}</td>
+                                    <td style="text-align:center;">{{producto.stock}}</td>
+                                    <td style="text-align:center;">
+                                        <img style="width: 100px; height: 100px; object-fit: contain; border:solid 1px grey;" :src="producto.imagen" :alt="producto.nombre">
+                                    </td>
+                                    <td>
+                                        <!-- Botón para agregar el producto a cotizacion-->
+                                        <button type="button" class="btn btn-info btn-sm"
+                                            v-on:click="agregarACotizacion(producto)">Agregar a cotizacion</button>
+                                        <!-- Botón para editar el producto -->
+                                        <a class="btn btn-primary btn-sm"
+                                            :href="'producto-update.html?id='+ producto.id">Editar</a>
+                                        <!-- Botón para eliminar el producto -->
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            v-on:click="eliminar(producto.id)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody v-if="tablaActual==2">
+                                <!-- Iterar sobre cada producto cotizado -->
+                                <tr class="" v-for="producto in productosCotizados">
+                                    <td scope="row">{{producto.id}}</td>
+                                    <td>{{producto.nombre}}</td>
+                                    <td style="text-align:center;">{{producto.precio}}</td>
+                                    <td style="text-align:center;">{{producto.suma}}</td>
+                                    <td style="text-align:center;">
+                                        <img style="width: 100px; height: 100px; object-fit: contain; border:solid 1px grey;"  :src="producto.imagen" :alt="producto.nombre">
+                                    </td>
+                                    <td>
+                                        <!-- Botón para eliminar el producto -->
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            v-on:click="eliminarDeCotizacion(producto.id)">Eliminar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Total:</td>
+                                    <td >{{sumaTotal}}</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </div>
+
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer id="Footer" class="d-flex flex-column justify-content-center align-items-center">
+        <!-- Coloca aquí el contenido del pie de página -->
+    </footer>
+    <!-- Enlace de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script><!--Enlace de VUE-->
+    <script src="./js/main.js"></script>
+    <script src="./js/productos.js"></script>
+</body>
+
+</html>
